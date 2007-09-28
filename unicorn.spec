@@ -2,7 +2,7 @@
 
 %define name unicorn
 %define version 0.9.3
-%define mdkrelease 4
+%define mdkrelease 5
 %define release %mkrel %{mdkrelease}
 
 Summary:	unicorn utility for BeWan Architecture support.
@@ -11,10 +11,12 @@ Version:	%{version}
 Release:	%{release}
 Source0:	unicorn-%{version}.tar.bz2
 Source1:	module_param.patch
-Patch0:		unicorn-0.9.3-set_cpus_allowed.patch
 #Patch0:		maxpacket.patch.bz2
 #Patch0:		unicorn-0.8.7-fno-gnu-linker.patch.bz2
-#Patch1:		unicorn-0.8.7-set_cpus_allowed.patch.bz2
+Patch1:		unicorn-0.9.0-kernel26-spinlock.patch
+Patch2:		unicorn-0.9.3-smp.patch
+Patch3:		unicorn-0.9.3-kernel2.6.22.patch
+Patch4:		unicorn-0.9.3-build.patch
 License:	BeWan 2004
 Group:		System/Kernel and hardware
 BuildRoot:	%{_tmppath}/%{name}-buildroot
@@ -35,9 +37,11 @@ unicorn Architecture support for Linux kernel %{kernel_version}
 
 %prep
 %setup -q -n %{name}
-%patch0 -p1 -b .set_cpus_allowed
-#%patch0 -p1 -b .maxpacket
-#%patch1 -p1 -b .set_cpus_allowed
+%patch1 -p1 -b .spinlock
+%patch2 -p1 -b .smp
+%patch3 -p1 -b .2.6.22
+%patch4 -p1 -b .build
+
 pushd adsl_status
 %configure
 popd
@@ -101,7 +105,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n dkms-%{name}
 %defattr(-,root,root)
-%doc %{_docdir}/%{name}-%{version}/*
+%doc %{_docdir}/*/*
 %dir %{_usr}/src/%{name}-%{version}
 %{_usr}/src/%{name}-%{version}/*
 
