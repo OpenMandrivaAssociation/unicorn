@@ -2,7 +2,7 @@
 
 %define name unicorn
 %define version 0.9.3
-%define mdkrelease 5
+%define mdkrelease 6
 %define release %mkrel %{mdkrelease}
 
 Summary:	unicorn utility for BeWan Architecture support.
