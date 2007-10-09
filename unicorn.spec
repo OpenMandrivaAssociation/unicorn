@@ -5,7 +5,7 @@
 %define mdkrelease 6
 %define release %mkrel %{mdkrelease}
 
-Summary:	unicorn utility for BeWan Architecture support.
+Summary:	unicorn utility for BeWan Architecture support
 Name:		%{name}
 Version:	%{version}
 Release:	%{release}
@@ -26,7 +26,7 @@ BuildRequires:	gtk-devel, automake1.4
 BeWan Architecture utility.
 
 %package -n dkms-%{name}
-Summary:	unicorn kernel module for BeWan Architecture support.
+Summary:	unicorn kernel module for BeWan Architecture support
 Group:		System/Kernel and hardware
 Requires(post):		dkms
 Requires(preun):		dkms
