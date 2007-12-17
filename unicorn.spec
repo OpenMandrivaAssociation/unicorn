@@ -19,7 +19,6 @@ Patch3:		unicorn-0.9.3-kernel2.6.22.patch
 Patch4:		unicorn-0.9.3-build.patch
 License:	BeWan 2004
 Group:		System/Kernel and hardware
-BuildRoot:	%{_tmppath}/%{name}-buildroot
 BuildRequires:	gtk-devel, automake1.4
 
 %description -n %{name}
