@@ -2,7 +2,7 @@
 
 %define name unicorn
 %define version 0.9.3
-%define mdkrelease 6
+%define mdkrelease 7
 %define release %mkrel %{mdkrelease}
 
 Summary:	unicorn utility for BeWan Architecture support
@@ -11,6 +11,10 @@ Version:	%{version}
 Release:	%{release}
 Source0:	unicorn-%{version}.tar.bz2
 Source1:	module_param.patch
+Source2:	dkms-unicorn-update-irq-flags.patch
+Source3:	dkms-unicorn-SET_MODULE_OWNER-removal.patch
+Source4:	dkms-unicorn-urb-lock-removal.patch
+Source5:	dkms-unicorn-update-int-handler-definition.patch
 #Patch0:		maxpacket.patch.bz2
 #Patch0:		unicorn-0.8.7-fno-gnu-linker.patch.bz2
 Patch1:		unicorn-0.9.0-kernel26-spinlock.patch
@@ -37,10 +41,10 @@ unicorn Architecture support for Linux kernel %{kernel_version}
 
 %prep
 %setup -q -n %{name}
-%patch1 -p1 -b .spinlock
-%patch2 -p1 -b .smp
-%patch3 -p1 -b .2.6.22
-%patch4 -p1 -b .build
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
 
 pushd adsl_status
 %configure
@@ -56,12 +60,12 @@ rm -rf $RPM_BUILD_ROOT
 %find_lang bewan_adsl_status
 
 # driver source
-mkdir -p $RPM_BUILD_ROOT/%{_usr}/src/%{name}-%{version}
-cp -r * $RPM_BUILD_ROOT/%{_usr}/src/%{name}-%{version}
-cp %{SOURCE1} $RPM_BUILD_ROOT/%{_usr}/src/%{name}-%{version}/patches/
-cat > $RPM_BUILD_ROOT/%{_usr}/src/%{name}-%{version}/dkms.conf <<EOF
+mkdir -p $RPM_BUILD_ROOT/%{_usr}/src/%{name}-%{version}-%{release}
+cp -r * $RPM_BUILD_ROOT/%{_usr}/src/%{name}-%{version}-%{release}
+cp %{SOURCE1} $RPM_BUILD_ROOT/%{_usr}/src/%{name}-%{version}-%{release}/patches/
+cat > $RPM_BUILD_ROOT/%{_usr}/src/%{name}-%{version}-%{release}/dkms.conf <<EOF
 PACKAGE_NAME=%{name}
-PACKAGE_VERSION=%{version}
+PACKAGE_VERSION=%{version}-%{release}
 
 DEST_MODULE_LOCATION[0]=/kernel/drivers/net
 DEST_MODULE_LOCATION[1]=/kernel/drivers/net
@@ -80,19 +84,35 @@ CLEAN="make clean"
 
 PATCH[0]=module_param.patch
 PATCH_MATCH[0]="2.6.17.*"
+PATCH[1]="dkms-unicorn-update-irq-flags.patch"
+PATCH_MATCH[1]="^2\.6\.(2[4-9])|([3-9][0-9]+)|([1-9][0-9][0-9]+)"
+PATCH[2]="dkms-unicorn-SET_MODULE_OWNER-removal.patch"
+PATCH_MATCH[2]="^2\.6\.(2[4-9])|([3-9][0-9]+)|([1-9][0-9][0-9]+)"
+PATCH[3]="dkms-unicorn-urb-lock-removal.patch"
+PATCH_MATCH[3]="^2\.6\.(2[4-9])|([3-9][0-9]+)|([1-9][0-9][0-9]+)"
+PATCH[4]="dkms-unicorn-update-int-handler-definition.patch"
+PATCH_MATCH[4]="^2\.6\.(19)|([2-9][0-9]+)|([1-9][0-9][0-9]+)"
 
 AUTOINSTALL=yes
 EOF
 
+for p in %{_sourcedir}/dkms-unicorn-update-irq-flags.patch \
+         %{_sourcedir}/dkms-unicorn-SET_MODULE_OWNER-removal.patch \
+         %{_sourcedir}/dkms-unicorn-urb-lock-removal.patch \
+         %{_sourcedir}/dkms-unicorn-update-int-handler-definition.patch;
+do
+	cp $p $RPM_BUILD_ROOT/%{_usrsrc}/unicorn-%{version}-%{release}/patches
+done
+
 %post -n dkms-%{name}
-set -x
-/usr/sbin/dkms --rpm_safe_upgrade add -m %name -v %version
-/usr/sbin/dkms --rpm_safe_upgrade build -m %name -v %version
-/usr/sbin/dkms --rpm_safe_upgrade install -m %name -v %version
+/usr/sbin/dkms --rpm_safe_upgrade add -m %name -v %version-%release
+/usr/sbin/dkms --rpm_safe_upgrade build -m %name -v %version-%release
+/usr/sbin/dkms --rpm_safe_upgrade install -m %name -v %version-%release
+exit 0
 
 %preun -n dkms-%{name}
-set -x
-/usr/sbin/dkms --rpm_safe_upgrade remove -m %name -v %version --all
+/usr/sbin/dkms --rpm_safe_upgrade remove -m %name -v %version-%release --all
+exit 0
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -106,7 +126,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n dkms-%{name}
 %defattr(-,root,root)
 %doc %{_docdir}/*/*
-%dir %{_usr}/src/%{name}-%{version}
-%{_usr}/src/%{name}-%{version}/*
-
+%dir %{_usr}/src/%{name}-%{version}-%{release}
+%{_usr}/src/%{name}-%{version}-%{release}/*
 
