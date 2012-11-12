@@ -1,0 +1,18 @@
+diff -Nru unicorn-0.9.3smppreempt.orig/msw/linrapi.c unicorn-0.9.3smppreempt/msw/linrapi.c
+--- unicorn-0.9.3smppreempt.orig/msw/linrapi.c	2006-05-18 11:16:25.000000000 +0200
++++ unicorn-0.9.3smppreempt/msw/linrapi.c	2006-05-18 11:17:02.000000000 +0200
+@@ -916,14 +916,6 @@
+ 	        del_obj(k);
+ 		return FAILURE;
+ 	}
+-#ifdef CONFIG_SMP
+-#ifndef CPU_MASK_CPU0
+-#define CPU_MASK_CPU0 1UL
+-#endif
+-	// Hack to try to make it work on SMP !!!!
+-	// Lock the threads to CPU #0
+-	set_cpus_allowed(k->thread,CPU_MASK_CPU0);
+-#endif
+ 	return SUCCESS;	
+ }
+ 

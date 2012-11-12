@@ -1,0 +1,66 @@
+diff -Nru unicorn-0.9.0.orig/msw/linrapi.c unicorn-0.9.0/msw/linrapi.c
+--- unicorn-0.9.0.orig/msw/linrapi.c	2005-11-06 18:00:46.000000000 +0100
++++ unicorn-0.9.0/msw/linrapi.c	2005-11-06 18:09:24.000000000 +0100
+@@ -152,15 +152,15 @@
+ static unsigned long obj_counters[6] = {0L};
+ 
+ static LIST_HEAD(rapi_heap_list);
+-static spinlock_t rapi_heap_lock=SPIN_LOCK_UNLOCKED;
++static spinlock_t rapi_heap_lock;
+ 
+ static atomic_t running_tasks = {0};
+ 
+ static struct semaphore rapi_thread_lock; // To serialize rAPI threads
+ 
+-static spinlock_t rapi_timer_lock=SPIN_LOCK_UNLOCKED;
++static spinlock_t rapi_timer_lock;
+ 
+-static spinlock_t tosca_lock=SPIN_LOCK_UNLOCKED;
++static spinlock_t tosca_lock;
+ 
+ //======================================================================
+ // C++ support
+@@ -1140,7 +1140,11 @@
+ 	}
+ 	
+ 	memcpy(q->name,name,4);
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 10)
++        spin_lock_init(&q->msg_q_lock);
++#else
+ 	q->msg_q_lock = SPIN_LOCK_UNLOCKED;
++#endif
+ 	INIT_LIST_HEAD(&q->msg_q);	
+ 	*qid = (DWORD)q;
+ 	DBG(RAPI_D,"q=%.4s\n",q->name);
+@@ -1527,6 +1531,16 @@
+ {
+ 	DBG(1,"HZ=%d\n",HZ);
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 10)
++        spin_lock_init(&rapi_heap_lock);
++        spin_lock_init(&rapi_timer_lock);
++        spin_lock_init(&tosca_lock);
++#else
++        rapi_heap_lock=SPIN_LOCK_UNLOCKED;
++        rapi_timer_lock=SPIN_LOCK_UNLOCKED;
++        tosca_lock=SPIN_LOCK_UNLOCKED;
++#endif
++
+ 	// create rAPI thread lock
+ 	init_MUTEX(&rapi_thread_lock);
+ 
+diff -Nru unicorn-0.9.0.orig/unicorn_pci/unicorn_pcidrv.c unicorn-0.9.0/unicorn_pci/unicorn_pcidrv.c
+--- unicorn-0.9.0.orig/unicorn_pci/unicorn_pcidrv.c	2005-11-06 18:00:46.000000000 +0100
++++ unicorn-0.9.0/unicorn_pci/unicorn_pcidrv.c	2005-11-06 18:10:17.000000000 +0100
+@@ -295,7 +295,11 @@
+ 	send_atm->send_pending = 0;
+ 	send_atm->started = FALSE;
+ 	send_atm->cell_count = 0;
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 10)
++        spin_lock_init(&send_atm->lock);
++#else
+ 	send_atm->lock = SPIN_LOCK_UNLOCKED;
++#endif
+ }
+ 
+ //----------------------------------------------------------------------

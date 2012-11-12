@@ -1,0 +1,335 @@
+--- unicorn.new/unicorntest/unicorntest.c.orig	2007-04-16 22:11:39.000000000 +0200
++++ unicorn.new/unicorntest/unicorntest.c	2007-04-16 22:13:29.000000000 +0200
+@@ -540,10 +540,10 @@
+ 	printf(" ----------------------------------------------------------\n\n");
+ }
+ 
+-bool InterpretCmdString (char *cmd,ADSL_DEVICE *device)
++BOOLEAN InterpretCmdString (char *cmd,ADSL_DEVICE *device)
+ {
+ 	int err;
+-	static bool MSW_INIT = FALSE;
++	static BOOLEAN MSW_INIT = FALSE;
+ 	int i;
+ 
+ 	if (strcmp(cmd,"HELP") == 0)
+--- unicorn.new/unicorn_eth/unicorn_ethdrv.c.orig	2007-04-16 22:11:39.000000000 +0200
++++ unicorn.new/unicorn_eth/unicorn_ethdrv.c	2007-04-16 22:13:29.000000000 +0200
+@@ -4,7 +4,7 @@
+   ST70134A or ST70136 Analog Front End (AFE).
+   This file contains the ethernet interface and SAR routines.
+ */
+-#include <linux/config.h>
++#include <linux/autoconf.h>
+ #include <linux/version.h>
+ #if defined(CONFIG_MODVERSIONS) && (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0))
+ #include <linux/modversions.h>
+@@ -140,12 +140,12 @@
+ struct unicorn_ethdrv *unicorn_ethdrv = NULL;
+ 
+ // driver parameters
+-static char *if_name = NULL;
+-static unsigned char *mac_address=NULL;
++static char if_name[IFNAMSIZ];
++static unsigned char mac_address[2*ETH_ALEN + 1];
+ static int VPI= ATM_VPI_UNSPEC;
+ static int VCI= ATM_VCI_UNSPEC;
+-static char *PROTOCOL = NULL;
+-static char *ENCAPS = NULL;
++static char PROTOCOL[8];
++static char ENCAPS[11];
+ #if DEBUG
+ #ifdef ETH_DRIVER
+ unsigned long DebugLevel=0; // ATM_D,DATA_D
+@@ -1355,15 +1355,15 @@
+ 	WARN("\n");
+ }
+ 
+-MODULE_PARM(if_name,"s");
+-MODULE_PARM(mac_address, "s");
+-MODULE_PARM(VPI, "i");
+-MODULE_PARM(VCI, "i");
+-MODULE_PARM(PROTOCOL, "s");
+-MODULE_PARM(ENCAPS, "s");
++module_param_string(if_name, if_name, sizeof(if_name), 0);
++module_param_string(mac_address, mac_address, sizeof(mac_address), 0);
++module_param(VPI, int, 0);
++module_param(VCI, int, 0);
++module_param_string(PROTOCOL, PROTOCOL, sizeof(PROTOCOL), 0);
++module_param_string(ENCAPS, ENCAPS, sizeof(ENCAPS), 0);
+ #if DEBUG
+ #ifdef ETH_DRIVER
+-MODULE_PARM(DebugLevel, "i");
++module_param(DebugLevel, ulong, 0);
+ #endif
+ #endif
+ 
+--- unicorn.new/unicorn_pci/unicorn_pcidrv.c.orig	2007-04-16 22:11:39.000000000 +0200
++++ unicorn.new/unicorn_pci/unicorn_pcidrv.c	2007-04-16 22:13:29.000000000 +0200
+@@ -4,7 +4,7 @@
+   ST70134A, ST70136 or ST20174 Analog Front End (AFE).
+   This file contains the PCI specific routines.
+ */
+-#include <linux/config.h>
++#include <linux/autoconf.h>
+ #include <linux/version.h>
+ #if defined(CONFIG_MODVERSIONS) && (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0))
+ #include <linux/modversions.h>
+@@ -2157,38 +2157,38 @@
+ }
+ 
+ /* module parameters for MSW */
+-MODULE_PARM(ActivationMode, "i");
++module_param(ActivationMode, ulong, 0);
+ //MODULE_PARM(ActivationTaskTimeout, "i");
+-MODULE_PARM(ActTimeout, "i");
+-MODULE_PARM(AutoActivation, "i");
++module_param(ActTimeout, ulong, 0);
++module_param(AutoActivation, ulong, 0);
+ //MODULE_PARM(BreakOnEntry, "i");
+-MODULE_PARM(DownstreamRate, "i");
+-MODULE_PARM(eocTrace, "i");
++module_param(DownstreamRate, ulong, 0);
++module_param(eocTrace, ulong, 0);
+ //MODULE_PARM(ExchangeDelay, "i");
+-MODULE_PARM(FmPollingRate, "i");
++module_param(FmPollingRate, ulong, 0);
+ //MODULE_PARM(g_RefGain, "i");
+-MODULE_PARM(g_TeqMode, "i");
+-MODULE_PARM(InitTimeout, "i");
+-MODULE_PARM(Interoperability, "i");
+-MODULE_PARM(LCD_Trig, "i");
+-MODULE_PARM(LOS_LOF_Trig, "i");
+-MODULE_PARM(LoopbackMode, "i");
+-MODULE_PARM(MswDebugLevel, "i");
+-MODULE_PARM(RetryTime, "i");
+-MODULE_PARM(setINITIALDAC, "i");
++module_param(g_TeqMode, ushort, 0);
++module_param(InitTimeout, ulong, 0);
++module_param(Interoperability, ulong, 0);
++module_param(LCD_Trig, ulong, 0);
++module_param(LOS_LOF_Trig, ulong, 0);
++module_param(LoopbackMode, ulong, 0);
++module_param(MswDebugLevel, ulong, 0);
++module_param(RetryTime, ulong, 0);
++module_param(setINITIALDAC, ulong, 0);
+ //MODULE_PARM(TrainingDelay, "i");
+ //MODULE_PARM(TruncateMode, "i");
+-MODULE_PARM(useAFE, "i");
++module_param(useAFE, ulong, 0);
+ //MODULE_PARM(useRFC019v, "i");
+ //MODULE_PARM(useRFC029v, "i");
+ //MODULE_PARM(useRFC033v, "i");
+ //MODULE_PARM(useRFC040v, "i");
+-MODULE_PARM(useRFC041v, "i");
++module_param(useRFC041v, ulong, 0);
+ //MODULE_PARM(useRFCFixedRate, "i");
+ //MODULE_PARM(useVCXO, "i");
+ //MODULE_PARM(_no_TS652, "i");
+ #if DEBUG
+-MODULE_PARM(DebugLevel, "i");
++module_param(DebugLevel, ulong, 0);
+ #endif
+ 
+ static int __init
+--- unicorn.new/unicorn_pci/Makefile.orig	2007-04-16 22:11:39.000000000 +0200
++++ unicorn.new/unicorn_pci/Makefile	2007-04-16 22:13:29.000000000 +0200
+@@ -6,7 +6,7 @@
+ obj ?= .
+ 
+ ifndef KERNEL_SOURCES 
+-KERNEL_SOURCES=/usr/src/linux
++KERNEL_SOURCES=/lib/modules/$(shell uname -r)/source
+ endif
+ ifndef HPATH
+ HPATH=$(KERNEL_SOURCES)/include
+--- unicorn.new/include/types.h.orig	2007-04-16 22:11:38.000000000 +0200
++++ unicorn.new/include/types.h	2007-04-16 22:13:29.000000000 +0200
+@@ -29,9 +29,6 @@
+ typedef const char *PCSTR, FAR *LPCSTR;
+ typedef void *PVOID, FAR *LPVOID;
+ typedef int BOOLEAN;
+-#ifndef __cplusplus
+-typedef int bool;
+-#endif
+ 
+ 
+ #ifndef MAX
+--- unicorn.new/amu/amu.h.orig	2007-04-16 22:11:38.000000000 +0200
++++ unicorn.new/amu/amu.h	2007-04-16 22:13:29.000000000 +0200
+@@ -30,7 +30,7 @@
+ unsigned char g_FAR_LOS = 0, g_FAR_LOF = 0, g_FAR_LCDNI = 0, g_FAR_LCDI = 0;
+ unsigned char g_Mode = AMSW_ANSI | AMSW_UAWG | AMSW_G_DMT | AMSW_G_LITE;
+ unsigned long g_ShowtimeCounter = 0;				  
+-bool L3_flag = FALSE;	// bool var to acknowledge answer to orderly shutdown request
++BOOLEAN L3_flag = FALSE;	// bool var to acknowledge answer to orderly shutdown request
+ 
+ T_AMSW_Identification               g_Identification;
+ T_AMSW_NT_NearEndLineOperData       g_NearEndLineOperData;
+@@ -47,7 +47,7 @@
+ T_AMSW_VersionMS g_VersionMS;
+ 
+ void AMUTask(unsigned long Arg1, unsigned long , unsigned long , unsigned long );
+-unsigned long FM_Polling(bool pm_poll);
++unsigned long FM_Polling(BOOLEAN pm_poll);
+ unsigned long PM_Polling(void);
+ 
+ #endif   // _AMU_H_
+--- unicorn.new/unicorn_usb/unicorn_usbdrv.c.orig	2007-04-16 22:11:39.000000000 +0200
++++ unicorn.new/unicorn_usb/unicorn_usbdrv.c	2007-04-16 22:13:29.000000000 +0200
+@@ -4,7 +4,7 @@
+   Analog Front End (AFE).
+   This file contains the USB specific routines.
+ */
+-#include <linux/config.h>
++#include <linux/autoconf.h>
+ #include <linux/version.h>
+ #if defined(CONFIG_MODVERSIONS) && (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0))
+ #include <linux/modversions.h>
+@@ -2289,39 +2289,39 @@
+ };
+ 
+ /* module parameters for MSW */
+-MODULE_PARM(ActivationMode, "i");
++module_param(ActivationMode, ulong, 0);
+ //MODULE_PARM(ActivationTaskTimeout, "i");
+-MODULE_PARM(ActTimeout, "i");
+-MODULE_PARM(AutoActivation, "i");
++module_param(ActTimeout, ulong, 0);
++module_param(AutoActivation, ulong, 0);
+ //MODULE_PARM(BreakOnEntry, "i");
+-MODULE_PARM(DownstreamRate, "i");
+-MODULE_PARM(eocTrace, "i");
+-MODULE_PARM(ExchangeDelay, "i");
+-MODULE_PARM(FmPollingRate, "i");
+-MODULE_PARM(g_RefGain, "i");
+-MODULE_PARM(g_TeqMode, "i");
+-MODULE_PARM(InitTimeout, "i");
+-MODULE_PARM(Interoperability, "i");
+-MODULE_PARM(LCD_Trig, "i");
+-MODULE_PARM(LOS_LOF_Trig, "i");
+-MODULE_PARM(LoopbackMode, "i");
+-MODULE_PARM(MswDebugLevel, "i");
+-MODULE_PARM(RetryTime, "i");
++module_param(DownstreamRate, ulong, 0);
++module_param(eocTrace, ulong, 0);
++module_param(ExchangeDelay, ulong, 0);
++module_param(FmPollingRate, ulong, 0);
++module_param(g_RefGain, ulong, 0);
++module_param(g_TeqMode, ushort, 0);
++module_param(InitTimeout, ulong, 0);
++module_param(Interoperability, ulong, 0);
++module_param(LCD_Trig, ulong, 0);
++module_param(LOS_LOF_Trig, ulong, 0);
++module_param(LoopbackMode, ulong, 0);
++module_param(MswDebugLevel, ulong, 0);
++module_param(RetryTime, ulong, 0);
+ //MODULE_PARM(setINITIALDAC, "i");
+-MODULE_PARM(TrainingDelay, "i");
++module_param(TrainingDelay, ulong, 0);
+ //MODULE_PARM(TruncateMode, "i");
+-MODULE_PARM(useAFE, "i");
+-MODULE_PARM(useRFC019v, "i");
+-MODULE_PARM(useRFC029v, "i");
++module_param(useAFE, ulong, 0);
++module_param(useRFC019v, ulong, 0);
++module_param(useRFC029v, ulong, 0);
+ //MODULE_PARM(useRFC033v, "i");
+-MODULE_PARM(useRFC040v, "i");
+-MODULE_PARM(useRFC041v, "i");
++module_param(useRFC040v, ulong, 0);
++module_param(useRFC041v, ulong, 0);
+ //MODULE_PARM(useRFCFixedRate, "i");
+-MODULE_PARM(useVCXO, "i");
+-MODULE_PARM(_no_TS652, "i");
++module_param(useVCXO, ulong, 0);
++module_param(_no_TS652, ulong, 0);
+ //MODULE_PARM(FrameNumber, "i");
+ #if DEBUG
+-MODULE_PARM(DebugLevel, "i");
++module_param(DebugLevel, ulong, 0);
+ #endif
+ 
+ //----------------------------------------------------------------------
+--- unicorn.new/unicorn_usb/Makefile.orig	2007-04-16 22:11:39.000000000 +0200
++++ unicorn.new/unicorn_usb/Makefile	2007-04-16 22:13:29.000000000 +0200
+@@ -6,7 +6,7 @@
+ obj ?= .
+ 
+ ifndef KERNEL_SOURCES 
+-KERNEL_SOURCES=/usr/src/linux
++KERNEL_SOURCES=/lib/modules/$(shell uname -r)/source
+ endif
+ ifndef HPATH
+ HPATH=$(KERNEL_SOURCES)/include
+--- unicorn.new/unicorn_atm/unicorn_atmdrv.c.orig	2007-04-16 22:11:39.000000000 +0200
++++ unicorn.new/unicorn_atm/unicorn_atmdrv.c	2007-04-16 22:13:29.000000000 +0200
+@@ -4,7 +4,7 @@
+   ST70134A or ST70136 Analog Front End (AFE).
+   This file contains the ATM interface and SAR routines.
+ */
+-#include <linux/config.h>
++#include <linux/autoconf.h>
+ #include <linux/version.h>
+ #if defined(CONFIG_MODVERSIONS) && (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0))
+ #include <linux/modversions.h>
+@@ -101,7 +101,7 @@
+ struct unicorn_atmdrv *unicorn_atmdrv = NULL;
+ 
+ // driver parameters
+-unsigned char *mac_address=NULL;
++unsigned char mac_address[2*ETH_ALEN + 1];
+ #if DEBUG
+ #ifdef ATM_DRIVER
+ unsigned long DebugLevel=0; // ATM_D,DATA_D
+@@ -1018,6 +1018,7 @@
+ 	set_bit(ATM_VF_PARTIAL, &vcc->flags);
+ 	set_bit(ATM_VF_READY,   &vcc->flags);
+  
++
+ 	// set MAC address,
+ 	unicorn_set_mac(drv,mac_address);
+ 
+@@ -1293,10 +1294,10 @@
+        return 0;
+ }
+ 
+-MODULE_PARM(mac_address, "s");
++module_param_string(mac_address, mac_address, sizeof(mac_address), 0);
+ #if DEBUG
+ #ifdef ATM_DRIVER
+-MODULE_PARM(DebugLevel, "i");
++module_param(DebugLevel, ulong, 0);
+ #endif
+ #endif
+ 
+--- unicorn.new/msw/fp_stubs.c.orig	2007-04-16 22:11:38.000000000 +0200
++++ unicorn.new/msw/fp_stubs.c	2007-04-16 22:13:29.000000000 +0200
+@@ -1,4 +1,4 @@
+-#include <linux/config.h>
++#include <linux/autoconf.h>
+ #if defined(CONFIG_MODVERSIONS) && !defined(MODVERSIONS)
+ #define MODVERSIONS
+ #endif
+--- unicorn.new/msw/linrapi.c.orig	2007-04-16 22:11:38.000000000 +0200
++++ unicorn.new/msw/linrapi.c	2007-04-16 22:13:29.000000000 +0200
+@@ -5,7 +5,7 @@
+   This file contain the rAPI(reduced API) functions.
+   rAPI is the interface between the Modem SW and the Operating System (here Linux).
+ */
+-#include <linux/config.h>
++#include <linux/autoconf.h>
+ #include <linux/version.h>
+ #if defined(CONFIG_MODVERSIONS) && (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0))
+ #include <linux/modversions.h>
+--- unicorn.new/Makefile.orig	2007-04-16 22:11:38.000000000 +0200
++++ unicorn.new/Makefile	2007-04-16 22:13:29.000000000 +0200
+@@ -6,7 +6,7 @@
+ VERS=0x093
+ 
+ # path to kernel sources and headers (must correspond to running kernel)
+-KERNEL_SOURCES=/usr/src/linux
++KERNEL_SOURCES=/lib/modules/$(shell uname -r)/source
+ HPATH=$(KERNEL_SOURCES)/include
+ MAKE=make  
+ 
