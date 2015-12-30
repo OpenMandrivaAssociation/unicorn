@@ -1,20 +1,16 @@
 # I love OpenSource :-(
 
-%define name unicorn
-%define version 0.9.3
-%define mdkrelease 8
-%define release %mkrel %{mdkrelease}
-
 Summary:	unicorn utility for BeWan Architecture support
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
+Name:		unicorn
+Version:	0.9.3
+Release:	9
 Source0:	unicorn-%{version}.tar.bz2
 Source1:	module_param.patch
 Source2:	dkms-unicorn-update-irq-flags.patch
 Source3:	dkms-unicorn-SET_MODULE_OWNER-removal.patch
 Source4:	dkms-unicorn-urb-lock-removal.patch
 Source5:	dkms-unicorn-update-int-handler-definition.patch
+Source100:	unicorn.rpmlintrc
 #Patch0:		maxpacket.patch.bz2
 #Patch0:		unicorn-0.8.7-fno-gnu-linker.patch.bz2
 Patch1:		unicorn-0.9.0-kernel26-spinlock.patch
@@ -23,8 +19,8 @@ Patch3:		unicorn-0.9.3-kernel2.6.22.patch
 Patch4:		unicorn-0.9.3-build.patch
 License:	BeWan 2004
 Group:		System/Kernel and hardware
-BuildRoot:	%{_tmppath}/%{name}-buildroot
-BuildRequires:	gtk-devel, automake1.4
+BuildRequires:	gtk+-devel
+BuildRequires:	automake1.4
 
 %description -n %{name}
 BeWan Architecture utility.
@@ -37,7 +33,7 @@ Requires(preun):		dkms
 Requires:	gcc-c++
 
 %description -n dkms-%{name}
-unicorn Architecture support for Linux kernel %{kernel_version}
+unicorn Architecture support for Linux kernel.
 
 %prep
 %setup -q -n %{name}
@@ -54,16 +50,16 @@ popd
 %make -C adsl_status
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 # utils 
-%make -C adsl_status DESTDIR="$RPM_BUILD_ROOT" install
+%make -C adsl_status DESTDIR="%{buildroot}" install
 %find_lang bewan_adsl_status
 
 # driver source
-mkdir -p $RPM_BUILD_ROOT/%{_usr}/src/%{name}-%{version}-%{release}
-cp -r * $RPM_BUILD_ROOT/%{_usr}/src/%{name}-%{version}-%{release}
-cp %{SOURCE1} $RPM_BUILD_ROOT/%{_usr}/src/%{name}-%{version}-%{release}/patches/
-cat > $RPM_BUILD_ROOT/%{_usr}/src/%{name}-%{version}-%{release}/dkms.conf <<EOF
+mkdir -p %{buildroot}/%{_usr}/src/%{name}-%{version}-%{release}
+cp -r * %{buildroot}/%{_usr}/src/%{name}-%{version}-%{release}
+cp %{SOURCE1} %{buildroot}/%{_usr}/src/%{name}-%{version}-%{release}/patches/
+cat > %{buildroot}/%{_usr}/src/%{name}-%{version}-%{release}/dkms.conf <<EOF
 PACKAGE_NAME=%{name}
 PACKAGE_VERSION=%{version}-%{release}
 
@@ -101,7 +97,7 @@ for p in %{_sourcedir}/dkms-unicorn-update-irq-flags.patch \
          %{_sourcedir}/dkms-unicorn-urb-lock-removal.patch \
          %{_sourcedir}/dkms-unicorn-update-int-handler-definition.patch;
 do
-	cp $p $RPM_BUILD_ROOT/%{_usrsrc}/unicorn-%{version}-%{release}/patches
+	cp $p %{buildroot}/%{_usrsrc}/unicorn-%{version}-%{release}/patches
 done
 
 %post -n dkms-%{name}
@@ -114,18 +110,12 @@ exit 0
 /usr/sbin/dkms --rpm_safe_upgrade remove -m %name -v %version-%release --all
 exit 0
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %files -f bewan_adsl_status.lang
-%defattr(-,root,root)
 %doc COPYING COPYING.GPL README
 %{_bindir}/*
 %{_datadir}/bewan_adsl_status/pixmaps/*
 
 %files -n dkms-%{name}
-%defattr(-,root,root)
-%doc %{_docdir}/*/*
 %dir %{_usr}/src/%{name}-%{version}-%{release}
 %{_usr}/src/%{name}-%{version}-%{release}/*
 

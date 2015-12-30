@@ -1,6 +1,1 @@
-dkms-unicorn-SET_MODULE_OWNER-removal.patch
-dkms-unicorn-update-int-handler-definition.patch
-dkms-unicorn-update-irq-flags.patch
-dkms-unicorn-urb-lock-removal.patch
-module_param.patch
 unicorn-0.9.3.tar.bz2

@@ -1,7 +1,2 @@
 sources:
-  "dkms-unicorn-SET_MODULE_OWNER-removal.patch:"	d1fbc6b86766275e71bfd593cc225f11b9e24d4d
-  "dkms-unicorn-update-int-handler-definition.patch:"	bdd51cbec9c1c3cab72f679a094f4718726dff96
-  "dkms-unicorn-update-irq-flags.patch:"	5b66f151f66adf067238e093685e63bbe46ec68e
-  "dkms-unicorn-urb-lock-removal.patch:"	6ddbdbbc9bf3a3c10339caef943f9bdcc389c18e
-  "module_param.patch:"	bda9323b30edf311b05985468a099829f7a45bcb
-  "unicorn-0.9.3.tar.bz2:"	5906d850d8d18558e38e265eb0df53f3236ab546
+  unicorn-0.9.3.tar.bz2: 5906d850d8d18558e38e265eb0df53f3236ab546

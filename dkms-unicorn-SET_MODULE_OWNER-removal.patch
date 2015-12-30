@@ -1,0 +1,14 @@
+Update for commit 10d024c1b2fd58af8362670d7d6e5ae52fc33353 in Linux 2.6.24
+
+Signed-off-by: Herton Ronaldo Krzesinski <herton@mandriva.com>
+
+--- unicorn-0.9.3/unicorn_eth/unicorn_ethdrv.c.orig	2008-03-21 18:40:31.000000000 -0300
++++ unicorn-0.9.3/unicorn_eth/unicorn_ethdrv.c	2008-03-21 18:41:34.000000000 -0300
+@@ -1389,7 +1389,6 @@ int unicorn_eth_init(void)
+ 	}
+ 	unicorn_ethdrv = drv = eth_dev->priv;
+ 	memset(drv, 0, sizeof(struct unicorn_ethdrv));  
+-	SET_MODULE_OWNER(eth_dev);
+ 	drv->dev = eth_dev;
+ 	drv->adsl_status = ADSL_STATUS_NOHARDWARE;
+ 	drv->vpi = VPI;

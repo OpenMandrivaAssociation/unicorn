@@ -1,0 +1,18 @@
+Update used irq-flags definitions.
+
+See commits 6e21361619328751e2637b004e14cf360aafbddc and
+b4471cbb09c4694e54092d02715c09fda2eb45ed on Linus tree.
+
+Signed-off-by: Herton Ronaldo Krzesinski <herton@mandriva.com>
+
+--- unicorn-0.9.3/unicorn_pci/unicorn_pcidrv.c.orig	2008-03-21 18:34:07.000000000 -0300
++++ unicorn-0.9.3/unicorn_pci/unicorn_pcidrv.c	2008-03-21 18:35:36.000000000 -0300
+@@ -987,7 +987,7 @@ int start_device(struct unicorn_dev *dev
+ 	    phys_base,dev->mem,dev->mem_size);
+ 	
+ 	// Initialize and connect the interrupt
+-	status = request_irq(pci_dev->irq, unicorn_isr, SA_SHIRQ, "unicorn_pci", dev);
++	status = request_irq(pci_dev->irq, unicorn_isr, IRQF_SHARED, "unicorn_pci", dev);
+ 	if (status) {
+ 		WARN("Failed to connect Interrupt,status=%d\n",status);
+ 		return status;

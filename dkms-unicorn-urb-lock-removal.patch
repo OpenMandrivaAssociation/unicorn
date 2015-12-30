@@ -1,0 +1,15 @@
+Update for urb->lock removal in 2.6.24 (see commit
+1431d2a44ccf68a547094976f363f94177ab00c6).
+
+Signed-off-by: Herton Ronaldo Krzesinski <herton@mandriva.com>
+
+--- unicorn-0.9.3/unicorn_usb/unicorn_usbdrv.c.orig	2008-03-21 18:44:41.000000000 -0300
++++ unicorn-0.9.3/unicorn_usb/unicorn_usbdrv.c	2008-03-21 21:04:04.000000000 -0300
+@@ -141,7 +141,6 @@ static void fill_isoc_urb(struct urb *ur
+ 	      unsigned int pipe, void *buf, int length, int packet_size, usb_complete_t complete,
+ 	      void *context)
+ {
+-	spin_lock_init(&urb->lock);
+ 	urb->dev=dev;
+ 	urb->pipe=pipe;
+ 	urb->transfer_buffer=buf;

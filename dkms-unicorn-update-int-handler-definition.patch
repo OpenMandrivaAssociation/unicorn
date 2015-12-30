@@ -1,0 +1,103 @@
+Update IRQ handler definitions as per commit
+7d12e780e003f93433d49ce78cfedf4b4c52adc5
+(Linux 2.6.19)
+
+Signed-off-by: Herton Ronaldo Krzesinski <herton@mandriva.com>
+
+--- unicorn-0.9.3/unicorn_pci/unicorn_pcidrv.c.orig	2008-03-21 22:05:03.000000000 -0300
++++ unicorn-0.9.3/unicorn_pci/unicorn_pcidrv.c	2008-03-21 22:06:31.000000000 -0300
+@@ -652,7 +652,7 @@ static void obc_interrupt(struct unicorn
+ //	Interrupt Service Routine (ISR) for IRQ Irq	
+ //----------------------------------------------------------------------
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0))
+-static irqreturn_t unicorn_isr(int irq, void *context, struct pt_regs *regs)
++static irqreturn_t unicorn_isr(int irq, void *context)
+ #else
+ static void unicorn_isr(int irq, void *context, struct pt_regs *regs)
+ #endif
+--- unicorn-0.9.3/unicorn_usb/unicorn_usbdrv.c.orig	2008-03-21 22:05:11.000000000 -0300
++++ unicorn-0.9.3/unicorn_usb/unicorn_usbdrv.c	2008-03-21 22:08:03.000000000 -0300
+@@ -379,11 +379,7 @@ static void atm_send_complete(struct uni
+ //----------------------------------------------------------------------
+ //	ATM US transfer complete
+ //----------------------------------------------------------------------
+-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0))
+-static void AtmUsXferComplete(struct urb *urb,struct pt_regs *pt_regs)
+-#else
+ static void AtmUsXferComplete(struct urb *urb)
+-#endif
+ {
+ 	struct unicorn_dev *dev = (struct unicorn_dev *)urb->context;
+ 		
+@@ -429,11 +425,7 @@ static void StartAtmUsXfer(struct unicor
+ //----------------------------------------------------------------------
+ //	ATM DS transfer complete
+ //----------------------------------------------------------------------
+-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0))
+-static void AtmDsXferComplete(struct urb *urb,struct pt_regs *pt_regs)
+-#else
+ static void AtmDsXferComplete(struct urb *urb)
+-#endif
+ {
+ 	struct unicorn_dev *dev = (struct unicorn_dev *)urb->context;
+ 	struct recv_atm *recv_atm = &dev->recv_atm;
+@@ -889,11 +881,7 @@ static void ObcCmdCompletion(struct unic
+ //----------------------------------------------------------------------
+ //	Interrupt In pipe completion routine
+ //----------------------------------------------------------------------
+-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0))
+-static void IntInComplete(struct urb *urb,struct pt_regs *pt_regs)
+-#else
+ static void IntInComplete(struct urb *urb)
+-#endif
+ {
+ 	struct unicorn_dev *dev = (struct unicorn_dev *)urb->context;
+ 	WORD *IntBuf = urb->transfer_buffer;
+@@ -1373,11 +1361,7 @@ static ST_STATUS WaitForObcCmdComplete(s
+ //-----------------------------------------------------------------------------
+ // ObcWriteIsocComplete:
+ //-----------------------------------------------------------------------------
+-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0))
+-static void ObcWriteIsocComplete(struct urb *urb,struct pt_regs *pt_regs)
+-#else
+ static void ObcWriteIsocComplete(struct urb *urb)
+-#endif
+ {
+ 	struct unicorn_dev *dev = (struct unicorn_dev *)urb->context;
+ 
+@@ -1399,11 +1383,7 @@ static void ObcWriteIsocComplete(struct 
+ //-----------------------------------------------------------------------------
+ // ObcWriteIntComplete:
+ //-----------------------------------------------------------------------------
+-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0))
+-static void ObcWriteIntComplete(struct urb *urb,struct pt_regs *pt_regs)
+-#else
+ static void ObcWriteIntComplete(struct urb *urb)
+-#endif
+ {
+ 	struct unicorn_dev *dev = (struct unicorn_dev *)urb->context;
+ 
+@@ -1426,11 +1406,7 @@ static void ObcWriteIntComplete(struct u
+ //-----------------------------------------------------------------------------
+ // ObcReadIsocComplete:
+ //-----------------------------------------------------------------------------
+-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0))
+-static void ObcReadIsocComplete(struct urb *urb,struct pt_regs *pt_regs)
+-#else
+ static void ObcReadIsocComplete(struct urb *urb)
+-#endif
+ {
+ 	struct unicorn_dev *dev = (struct unicorn_dev *)urb->context;
+ 
+@@ -1467,11 +1443,7 @@ static void ObcReadIsocComplete(struct u
+ //-----------------------------------------------------------------------------
+ // ObcReadIntComplete:
+ //-----------------------------------------------------------------------------
+-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0))
+-static void ObcReadIntComplete(struct urb *urb,struct pt_regs *pt_regs)
+-#else
+ static void ObcReadIntComplete(struct urb *urb)
+-#endif
+ {
+ 	struct unicorn_dev *dev = (struct unicorn_dev *)urb->context;
+ 		
